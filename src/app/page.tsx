@@ -1,6 +1,10 @@
 import { SearchContainer } from '@/components/search-container';
+import { getSession } from '@/lib/auth';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { LogIn, LayoutDashboard } from 'lucide-react';
 
-// Inline SVG for PANDA logo
+
 const PandaLogo = () => (
   <svg 
     width="40" 
@@ -22,15 +26,39 @@ const PandaLogo = () => (
 );
 
 
-export default function HomePage() {
+export default async function HomePage() {
+  const { isLoggedIn } = await getSession();
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <header className="w-full py-5 px-4 sm:px-6 lg:px-8 border-b shadow-sm bg-card">
-        <div className="max-w-4xl mx-auto flex items-center gap-3">
-          <PandaLogo />
-          <h1 className="text-3xl sm:text-4xl font-bold font-headline text-foreground tracking-tight">
-            PANDA Search
-          </h1>
+      <header className="w-full py-4 px-4 sm:px-6 lg:px-8 border-b shadow-sm bg-card sticky top-0 z-20">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <PandaLogo />
+            <h1 className="text-2xl sm:text-3xl font-bold font-headline text-foreground tracking-tight">
+              PANDA Search
+            </h1>
+          </div>
+          <nav>
+            {isLoggedIn ? (
+              <Button asChild variant="outline">
+                <Link href="/dashboard">
+                  <LayoutDashboard className="mr-2 h-4 w-4" /> Dashboard
+                </Link>
+              </Button>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Button asChild variant="ghost">
+                  <Link href="/login">
+                    <LogIn className="mr-2 h-4 w-4" /> Login
+                  </Link>
+                </Button>
+                <Button asChild>
+                  <Link href="/register">Register</Link>
+                </Button>
+              </div>
+            )}
+          </nav>
         </div>
       </header>
       
@@ -44,3 +72,4 @@ export default function HomePage() {
     </div>
   );
 }
+
