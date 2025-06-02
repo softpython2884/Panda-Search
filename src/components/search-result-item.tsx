@@ -8,6 +8,8 @@ interface SearchResultItemProps {
 }
 
 export function SearchResultItem({ service }: SearchResultItemProps) {
+  const domainUrl = service.domain && !service.domain.startsWith('http') ? `https://${service.domain}` : service.domain;
+
   return (
     <Card className="flex flex-col bg-card text-card-foreground rounded-lg shadow-lg overflow-hidden h-full transition-all hover:shadow-xl">
       <CardHeader className="pb-3">
@@ -26,7 +28,7 @@ export function SearchResultItem({ service }: SearchResultItemProps) {
       </CardContent>
       <CardFooter>
         <Button asChild variant="outline" size="sm" className="w-full bg-accent text-accent-foreground hover:bg-accent/90 rounded-md shadow-sm hover:shadow-md transition-shadow">
-          <a href={service.publicUrl} target="_blank" rel="noopener noreferrer">
+          <a href={domainUrl || service.publicUrl} target="_blank" rel="noopener noreferrer">
             Visit Service
             <ExternalLink className="ml-2 h-4 w-4" />
           </a>
