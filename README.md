@@ -1,33 +1,32 @@
-App Name: PANDA Pod
+App Name: PANDA Search
 
 Core Features:
 
-- REST API to register new services (POST /register).
-- Search service registry (GET /search?q=...).
-- Update a service (PUT /register/:id) with token validation.
-- Delete a service (DELETE /register/:id) with token validation.
-- SQLite database for persistent storage.
-- All service entries contain:
+- Input field for keyword search.
+- Fetch search results via REST API: GET /search?q=...
+- Display each service result with:
   - name
   - description
-  - local_url (optional)
-  - public_url (required)
-  - domain (custom name like mysite.panda)
-  - type (e.g., website, api, game)
-  - token (for update/delete)
-  - created_at timestamp
+  - domain (displayed, not functional DNS)
+  - type
+  - public URL (clickable)
 
 Style Guidelines:
 
-- This is a backend service. It should:
-  - Log clearly in console when API is running.
-  - Return clear JSON responses with HTTP codes.
-  - Use CORS headers for browser clients.
-  - Include error handling with JSON messages.
+- Primary color: HSL 280, 65%, 55% (#a259e4) – vibrant purple
+- Background: HSL 0, 0%, 96% (#f5f5f5)
+- Accent: HSL 200, 100%, 50% (#009fff)
+- Font pairing:
+  - Headings: 'Poppins' (sans-serif)
+  - Body: 'Open Sans'
+- Rounded buttons with soft shadows.
+- Light card layout for search results.
+- Smooth fade-in animation when results appear.
+- Minimal UI to focus on simplicity and utility.
 
 Technical Notes:
 
-- Use Express.js and SQLite3 (no ORM required).
-- Body data in JSON.
-- Secure endpoints for updates and deletes with token comparison.
-- The service must run on `http://localhost:3000` by default.
+- Frontend only (no backend needed).
+- Use fetch API to call http://localhost:3000/search?q=...
+- Optional: show loading indicator while fetching.
+- Make it responsive (mobile/tablet friendly).
