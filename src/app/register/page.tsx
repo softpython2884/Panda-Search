@@ -1,7 +1,8 @@
 // src/app/register/page.tsx
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { registerAction, type RegisterFormState } from '@/actions/auth';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -24,7 +25,7 @@ function SubmitButton() {
 
 export default function RegisterPage() {
   const initialState: RegisterFormState = { message: '', success: false };
-  const [state, formAction] = useFormState(registerAction, initialState);
+  const [state, formAction] = useActionState(registerAction, initialState);
   const { toast } = useToast();
 
   useEffect(() => {

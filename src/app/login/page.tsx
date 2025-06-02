@@ -1,7 +1,8 @@
 // src/app/login/page.tsx
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { loginAction, type LoginFormState } from '@/actions/auth';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -24,7 +25,7 @@ function SubmitButton() {
 
 export default function LoginPage() {
   const initialState: LoginFormState = { message: '', success: false };
-  const [state, formAction] = useFormState(loginAction, initialState);
+  const [state, formAction] = useActionState(loginAction, initialState);
   const { toast } = useToast();
 
   useEffect(() => {
