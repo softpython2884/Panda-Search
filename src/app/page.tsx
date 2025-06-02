@@ -1,8 +1,9 @@
 import { SearchContainer } from '@/components/search-container';
 import { getSession } from '@/lib/auth';
+import { logoutAction } from '@/actions/auth';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { LogIn, LayoutDashboard } from 'lucide-react';
+import { LogIn, LogOut, ExternalLink } from 'lucide-react';
 
 
 const PandaLogo = () => (
@@ -39,24 +40,26 @@ export default async function HomePage() {
               PANDA Search
             </h1>
           </div>
-          <nav>
+          <nav className="flex items-center gap-2">
             {isLoggedIn ? (
-              <Button asChild variant="outline">
-                <Link href="/dashboard">
-                  <LayoutDashboard className="mr-2 h-4 w-4" /> Dashboard
+              <>
+                <Button asChild variant="outline">
+                  <a href="http://localhost:9003" target="_blank" rel="noopener noreferrer">
+                    <ExternalLink className="mr-2 h-4 w-4" /> Accéder au tableau de bord
+                  </a>
+                </Button>
+                <form action={logoutAction}>
+                  <Button variant="ghost" type="submit">
+                    <LogOut className="mr-2 h-4 w-4" /> Logout
+                  </Button>
+                </form>
+              </>
+            ) : (
+              <Button asChild>
+                <Link href="/login">
+                  <LogIn className="mr-2 h-4 w-4" /> Login
                 </Link>
               </Button>
-            ) : (
-              <div className="flex items-center gap-2">
-                <Button asChild variant="ghost">
-                  <Link href="/login">
-                    <LogIn className="mr-2 h-4 w-4" /> Login
-                  </Link>
-                </Button>
-                <Button asChild>
-                  <Link href="/register">Register</Link>
-                </Button>
-              </div>
             )}
           </nav>
         </div>
@@ -72,4 +75,3 @@ export default async function HomePage() {
     </div>
   );
 }
-

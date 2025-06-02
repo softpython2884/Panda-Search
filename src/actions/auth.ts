@@ -54,7 +54,7 @@ export async function loginAction(prevState: LoginFormState, formData: FormData)
     console.error("Login error:", error);
     return { message: "An unexpected error occurred.", success: false, errors: { general: ["An unexpected error occurred."] } };
   }
-  redirect('/dashboard');
+  redirect('/');
 }
 
 
@@ -93,10 +93,10 @@ export async function registerAction(prevState: RegisterFormState, formData: For
     console.error("Registration error:", error);
     return { message: "An unexpected error occurred.", success: false, errors: { general: ["An unexpected error occurred."] } };
   }
-  redirect('/dashboard');
+  redirect('/');
 }
 
 export async function logoutAction() {
   await logoutUser();
-  redirect('/login');
+  redirect('/');
 }

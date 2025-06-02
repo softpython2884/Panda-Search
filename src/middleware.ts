@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from 'next/server';
-import { getSession } from '@/lib/auth'; // Assuming getSession is compatible or adapted
+import { getSession } from '@/lib/auth';
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -16,16 +16,22 @@ export async function middleware(request: NextRequest) {
 
   const publicPaths = ['/login', '/register', '/'];
 
-  if (!isLoggedIn && !publicPaths.some(p => pathname === p || (p === '/' && pathname.startsWith('/')) && !pathname.startsWith('/dashboard'))) {
-    // If user is not logged in and trying to access a protected page (e.g., /dashboard), redirect to login
-    if(pathname.startsWith('/dashboard')) {
-      return NextResponse.redirect(new URL('/login', request.url));
-    }
+  // If user is not logged in and trying to access a page that is not public (excluding the home page itself)
+  // This logic might need refinement if you have other top-level protected pages.
+  // For now, only /login and /register are explicitly public beyond '/'.
+  // Any other route that is not explicitly public and is not '/' would require login.
+  // Since we removed /dashboard, this rule becomes less critical for now.
+  // However, if you add other protected routes later, you'll need to adjust this.
+  if (!isLoggedIn && !publicPaths.includes(pathname) && pathname !== '/') {
+     // Example: if you add /settings, it would redirect to /login if not logged in.
+     // For now, this condition will rarely be met as we only have /, /login, /register.
+    return NextResponse.redirect(new URL('/login', request.url));
   }
 
+
   if (isLoggedIn && (pathname === '/login' || pathname === '/register')) {
-    // If user is logged in and tries to access login or register, redirect to dashboard
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+    // If user is logged in and tries to access login or register, redirect to home
+    return NextResponse.redirect(new URL('/', request.url));
   }
   
   return NextResponse.next();
@@ -49,6 +55,6 @@ export const config = {
     '/', // Match the root path explicitly if not covered
     '/login',
     '/register',
-    '/dashboard/:path*',
+    // Removed '/dashboard/:path*' as it's no longer an internal route
   ],
 };
