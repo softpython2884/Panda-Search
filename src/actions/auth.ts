@@ -7,7 +7,7 @@ import { z } from 'zod';
 
 const LoginSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters." }),
+  password: z.string().min(1, { message: "Password cannot be empty." }), // Min 1 for backend to validate length
 });
 
 const RegisterSchema = z.object({
@@ -16,7 +16,7 @@ const RegisterSchema = z.object({
   confirmPassword: z.string(),
 }).refine(data => data.password === data.confirmPassword, {
   message: "Passwords don't match",
-  path: ["confirmPassword"], // path of error
+  path: ["confirmPassword"], 
 });
 
 
@@ -45,14 +45,15 @@ export async function loginAction(prevState: LoginFormState, formData: FormData)
 
   try {
     const user = await loginUser(email, password);
-    if (user) {
-      // Successful login
-    } else {
-      return { message: "Invalid email or password.", success: false, errors: { general: ["Invalid email or password."] } };
+    if (!user) {
+      // This case might not be reached if loginUser always throws on API error
+      return { message: "Login failed. Please check your credentials.", success: false, errors: { general: ["Login failed. Please check your credentials."] } };
     }
+    // Successful login, user object might be used if needed here
   } catch (error) {
-    console.error("Login error:", error);
-    return { message: "An unexpected error occurred.", success: false, errors: { general: ["An unexpected error occurred."] } };
+    console.error("Login action error:", error);
+    const message = error instanceof Error ? error.message : "An unexpected error occurred during login.";
+    return { message, success: false, errors: { general: [message] } };
   }
   redirect('/');
 }
@@ -84,14 +85,15 @@ export async function registerAction(prevState: RegisterFormState, formData: For
 
   try {
     const user = await registerUser(email, password);
-    if (user) {
-      // Successful registration
-    } else {
-      return { message: "User already exists or registration failed.", success: false, errors: { general: ["User already exists or registration failed."] } };
+    if (!user) {
+      // This case might not be reached if registerUser always throws on API error or auto-login failure
+       return { message: "Registration failed. Please try again.", success: false, errors: { general: ["Registration failed. Please try again."] } };
     }
+    // Successful registration and auto-login
   } catch (error) {
-    console.error("Registration error:", error);
-    return { message: "An unexpected error occurred.", success: false, errors: { general: ["An unexpected error occurred."] } };
+    console.error("Register action error:", error);
+    const message = error instanceof Error ? error.message : "An unexpected error occurred during registration.";
+    return { message, success: false, errors: { general: [message] } };
   }
   redirect('/');
 }
